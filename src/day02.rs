@@ -65,7 +65,7 @@ fn password_valid2(psswd: &PasswordRow) -> bool {
 }
 
 fn xor(a: bool, b: bool) -> bool {
-    (a && !b) | (!a & b)
+    (a && !b) | (!a && b)
 }
 
 #[cfg(test)]
