@@ -82,27 +82,37 @@ impl Cypher {
     pub fn find_contiguous(&self, target: isize) -> Option<&[isize]> {
         let find_contiguous = |slice_size, disp| {
             let mut result = None;
+            let mut found = false;
             for start_idx in (0 + disp..self.len).step_by(slice_size) {
                 let mut sum = 0;
                 for idx in start_idx..slice_size {
                     sum += self.numbers[idx];
                     if sum == target {
                         result = Some(&self.numbers[start_idx..idx + 1]);
+                        found = true;
                         break;
                     }
+                }
+                if found {
+                    break;
                 }
             }
             return result;
         };
 
         let mut result = None;
+        let mut found = false;
 
         for slice_size in 2..self.len {
             for displacement in 0..slice_size {
                 result = find_contiguous(slice_size, displacement);
                 if result.is_some() {
+                    found = true;
                     break;
                 }
+            }
+            if found {
+                break;
             }
         }
 
