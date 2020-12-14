@@ -91,6 +91,8 @@ impl Cypher {
                         result = Some(&self.numbers[start_idx..idx + 1]);
                         found = true;
                         break;
+                    } else if sum > target {
+                        break;
                     }
                 }
                 if found {
