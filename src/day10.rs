@@ -25,43 +25,49 @@ fn part_1(input: &[usize]) -> usize {
     return count_3 * count_1;
 }
 
-fn has_hole(n1: usize, n3: usize) -> bool {
-    return n3 - n1 == 2 || n3 - n1 == 3;
-}
-
 #[aoc(day10, part2)]
 fn part_2(input: &[usize]) -> usize {
-    let mut count = 0;
-    for i in 1..input.len() - 1 {
-        if has_hole(input[i - 1], input[i + 1]) {
-            count += count_inner(input, i);
+    let current_vec = input;
+    let len = current_vec.len();
+    let mut pivots = vec![];
+
+    for i in 0..len - 2 {
+        if current_vec[i + 1] - current_vec[i] < 3 && current_vec[i + 2] - current_vec[i] <= 3 {
+            pivots.push(i);
         }
     }
-    return count;
+
+    let mut count = 0;
+    for idx in pivots {
+        count += count_inner(&current_vec, idx);
+    }
+
+    return count + 2;
 }
 
 fn count_inner(slice: &[usize], pivot_idx: usize) -> usize {
-    let mut new_vec = slice.to_vec();
-    let input = std::io::stdin();
-    // println!("pivot: {}", new_vec[pivot_idx]);
-    new_vec.remove(pivot_idx);
-    // println!("{:?}", new_vec);
-    // input.read_line(&mut String::new());
-    let mut found_hole = false;
-    let mut count = 0;
-    for i in 1..new_vec.len() - 1 {
-        // println!("({})", i);
-        input.read_line(&mut String::new());
-        if has_hole(new_vec[i - 1], new_vec[i + 1]) {
-            count += 1;
-            // println!("Descending");
-            count += count_inner(&new_vec, i);
-            found_hole = true;
+    let mut current_vec = slice.to_vec();
+    current_vec.remove(pivot_idx);
+    let len = current_vec.len();
+    let mut pivots = vec![];
+    let mut pivot_found = false;
+
+    for i in 0..len - 2 {
+        if current_vec[i + 1] - current_vec[i] < 3 && current_vec[i + 2] - current_vec[i] <= 3 {
+            pivot_found = true;
+            pivots.push(i);
         }
     }
-    if !found_hole {
-        return 0;
+
+    if !pivot_found {
+        // dbg!(current_vec);
+        return 1;
     } else {
+        let mut count = 0;
+        for idx in pivots {
+            count += count_inner(&current_vec, idx);
+        }
+
         return count;
     }
 }
@@ -79,17 +85,10 @@ mod test {
         assert_eq!(part_1, 35);
     }
 
-    // #[test]
+    #[test]
     fn test_example_p2() {
         let vals = parse_input(EXAMPLE_INPUT);
         let count = part_2(&vals);
         assert_eq!(count, 8);
-    }
-
-    #[test]
-    fn test_hole() {
-        assert!(has_hole(4, 6));
-        assert!(has_hole(4, 7));
-        assert!(!has_hole(4, 10));
     }
 }
