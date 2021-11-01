@@ -44,7 +44,6 @@ fn part_2(input: &[usize]) -> usize {
 
     return count + 2;
 }
-
 fn count_inner(slice: &[usize], pivot_idx: usize) -> usize {
     let mut current_vec = slice.to_vec();
     current_vec.remove(pivot_idx);
